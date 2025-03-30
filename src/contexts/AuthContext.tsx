@@ -33,13 +33,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
+      console.log(`Attempting login for: ${email}`);
+      // Always initialize storage before login
+      initializeLocalStorage();
+      
       const user = performLogin(email, password);
       
       if (user) {
+        console.log(`Login successful for: ${user.name}`);
         setUser(user);
         toast.success(`Welcome back, ${user.name}!`);
         return true;
       } else {
+        console.log(`Login failed for: ${email}`);
         toast.error("Invalid credentials. Please check your email and try again.");
         return false;
       }

@@ -231,44 +231,48 @@ const COMPLAINTS_STORAGE_KEY = "university_cms_complaints";
 const COURSES_STORAGE_KEY = "university_cms_courses";
 const CURRENT_USER_KEY = "university_cms_current_user";
 
-// Initialize local storage with mock data - moved up for better organization
+// Initialize local storage with mock data
 export const initializeLocalStorage = () => {
-  if (!localStorage.getItem(USERS_STORAGE_KEY)) {
-    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
-  }
-  if (!localStorage.getItem(COMPLAINTS_STORAGE_KEY)) {
-    localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(initialComplaints));
-  }
-  if (!localStorage.getItem(COURSES_STORAGE_KEY)) {
-    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(initialCourses));
-  }
+  console.log("Initializing local storage with mock data");
+  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
+  localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(initialComplaints));
+  localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(initialCourses));
 };
 
 // Export accessor functions to get data from localStorage
 export const getUsers = (): User[] => {
-  // Initialize storage if not already done
-  initializeLocalStorage();
+  // Make sure storage is initialized before trying to access it
   const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
-  return storedUsers ? JSON.parse(storedUsers) : [];
+  if (!storedUsers) {
+    initializeLocalStorage();
+    return initialUsers;
+  }
+  return JSON.parse(storedUsers);
 };
 
 export const getCourses = (): Course[] => {
-  // Initialize storage if not already done
-  initializeLocalStorage();
   const storedCourses = localStorage.getItem(COURSES_STORAGE_KEY);
-  return storedCourses ? JSON.parse(storedCourses) : [];
+  if (!storedCourses) {
+    initializeLocalStorage();
+    return initialCourses;
+  }
+  return JSON.parse(storedCourses);
 };
 
 export const getComplaints = (userId: string, role: string): Complaint[] => {
-  // Initialize storage if not already done
-  initializeLocalStorage();
-  const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
+  const storedComplaints = localStorage.getItem(COMPLAINTS_STORAGE_KEY);
+  if (!storedComplaints) {
+    initializeLocalStorage();
+    return [];
+  }
+  
+  const complaints = JSON.parse(storedComplaints);
   
   if (role === "student") {
-    return storedComplaints.filter((c: Complaint) => c.studentId === userId);
+    return complaints.filter((c: Complaint) => c.studentId === userId);
   } else if (role === "lecturer") {
     const userCourses = getUsers().find(u => u.id === userId)?.courses || [];
-    return storedComplaints.filter((c: Complaint) => userCourses.includes(c.courseId));
+    return complaints.filter((c: Complaint) => userCourses.includes(c.courseId));
   }
   
   return [];
@@ -281,16 +285,19 @@ export const getCurrentUser = (): User | null => {
 };
 
 export const login = (email: string, password: string): User | null => {
-  // Always initialize storage first to ensure data is available
+  console.log(`Login attempt with email: ${email}`);
+  
+  // Always initialize storage first
   initializeLocalStorage();
   
-  // Now get users from storage
-  const users = getUsers();
+  // Get users directly from initialUsers array to ensure we have all users
+  // This ensures we're not relying on potentially empty localStorage
+  const user = initialUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
   
-  // Find the user by email (password is ignored for demo)
-  const user = users.find((u) => u.email === email);
+  console.log("Found user:", user);
   
   if (user) {
+    // Store user in localStorage
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     return user;
   }

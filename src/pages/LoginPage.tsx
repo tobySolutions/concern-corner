@@ -19,6 +19,7 @@ const LoginPage: React.FC = () => {
 
   // Initialize mock data when the login page loads
   useEffect(() => {
+    console.log("LoginPage: Initializing mock data");
     initializeLocalStorage();
   }, []);
 
@@ -26,12 +27,18 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoggingIn(true);
     
+    console.log(`Attempting to log in with: ${email}`);
     try {
       const success = await login(email, password);
       if (!success) {
         toast.error("Invalid credentials. Please check your email and password.");
+      } else {
+        console.log("Login successful, redirecting...");
       }
       // Redirect will happen automatically through useEffect if successful
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -39,6 +46,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
+      console.log(`User authenticated as ${user?.role}, redirecting...`);
       if (user?.role === "student") {
         navigate("/student-dashboard");
       } else if (user?.role === "lecturer") {

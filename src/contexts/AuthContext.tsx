@@ -40,6 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toast.success(`Welcome back, ${user.name}!`);
         return true;
       } else {
+        toast.error("Invalid credentials. Please check your email and try again.");
         return false;
       }
     } catch (error) {

@@ -5,7 +5,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import AuthLayout from "@/components/layout/AuthLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getComplaints } from "@/services/mockData";
+import { getComplaints, initializeLocalStorage } from "@/services/mockData";
 import { Complaint } from "@/types";
 import { FileText, Clock, CheckCircle2, AlertCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,13 @@ const LecturerDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Ensure data is initialized
+    initializeLocalStorage();
+    
     if (user) {
+      console.log(`Fetching complaints for lecturer: ${user.id}`);
       const lecturerComplaints = getComplaints(user.id, user.role);
+      console.log(`Found ${lecturerComplaints.length} complaints for lecturer`);
       setComplaints(lecturerComplaints);
     }
   }, [user]);

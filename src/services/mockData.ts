@@ -1,4 +1,3 @@
-
 import { User, Course, Complaint, Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -260,6 +259,9 @@ export const getCourses = (): Course[] => {
 };
 
 export const getComplaints = (userId: string, role: string): Complaint[] => {
+  console.log(`Getting complaints for user ${userId} with role ${role}`);
+  
+  // Always initialize if data doesn't exist
   const storedComplaints = localStorage.getItem(COMPLAINTS_STORAGE_KEY);
   if (!storedComplaints) {
     initializeLocalStorage();
@@ -267,12 +269,22 @@ export const getComplaints = (userId: string, role: string): Complaint[] => {
   }
   
   const complaints = JSON.parse(storedComplaints);
+  console.log(`Found ${complaints.length} total complaints in storage`);
   
   if (role === "student") {
-    return complaints.filter((c: Complaint) => c.studentId === userId);
+    const studentComplaints = complaints.filter((c: Complaint) => c.studentId === userId);
+    console.log(`Filtered to ${studentComplaints.length} complaints for student`);
+    return studentComplaints;
   } else if (role === "lecturer") {
-    const userCourses = getUsers().find(u => u.id === userId)?.courses || [];
-    return complaints.filter((c: Complaint) => userCourses.includes(c.courseId));
+    // Get the courses taught by this lecturer
+    const user = getUsers().find(u => u.id === userId);
+    const userCourses = user?.courses || [];
+    console.log(`Lecturer ${userId} teaches ${userCourses.length} courses:`, userCourses);
+    
+    // Find complaints from these courses
+    const lecturerComplaints = complaints.filter((c: Complaint) => userCourses.includes(c.courseId));
+    console.log(`Filtered to ${lecturerComplaints.length} complaints for lecturer's courses`);
+    return lecturerComplaints;
   }
   
   return [];

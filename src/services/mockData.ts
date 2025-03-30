@@ -1,3 +1,4 @@
+
 import { User, Course, Complaint, Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -233,9 +234,19 @@ const CURRENT_USER_KEY = "university_cms_current_user";
 // Initialize local storage with mock data
 export const initializeLocalStorage = () => {
   console.log("Initializing local storage with mock data");
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
-  localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(initialComplaints));
-  localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(initialCourses));
+  
+  // Check if data already exists to avoid overwriting
+  if (!localStorage.getItem(USERS_STORAGE_KEY)) {
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
+  }
+  
+  if (!localStorage.getItem(COURSES_STORAGE_KEY)) {
+    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(initialCourses));
+  }
+  
+  if (!localStorage.getItem(COMPLAINTS_STORAGE_KEY)) {
+    localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(initialComplaints));
+  }
 };
 
 // Export accessor functions to get data from localStorage
@@ -280,9 +291,15 @@ export const getComplaints = (userId: string, role: string): Complaint[] => {
     const user = getUsers().find(u => u.id === userId);
     const userCourses = user?.courses || [];
     console.log(`Lecturer ${userId} teaches ${userCourses.length} courses:`, userCourses);
+    console.log("Lecturer courses:", userCourses);
     
-    // Find complaints from these courses
-    const lecturerComplaints = complaints.filter((c: Complaint) => userCourses.includes(c.courseId));
+    // Find complaints from these courses - add more detailed logging
+    const lecturerComplaints = complaints.filter((c: Complaint) => {
+      const matches = userCourses.includes(c.courseId);
+      console.log(`Complaint ${c.id} for course ${c.courseId}, match: ${matches}`);
+      return matches;
+    });
+    
     console.log(`Filtered to ${lecturerComplaints.length} complaints for lecturer's courses`);
     return lecturerComplaints;
   }
@@ -329,6 +346,9 @@ export const getComplaintById = (complaintId: string): Complaint | undefined => 
 };
 
 export const createComplaint = (complaint: Omit<Complaint, 'id' | 'referenceNumber' | 'createdAt' | 'updatedAt'>): Complaint => {
+  // Make sure we're working with the latest data
+  initializeLocalStorage();
+  
   const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
   
   // Generate a unique reference number
@@ -342,6 +362,9 @@ export const createComplaint = (complaint: Omit<Complaint, 'id' | 'referenceNumb
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
+  
+  console.log("Creating new complaint:", newComplaint);
+  console.log("For course ID:", newComplaint.courseId);
   
   storedComplaints.push(newComplaint);
   localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(storedComplaints));

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -20,16 +19,21 @@ const LecturerDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Ensure data is initialized
-    initializeLocalStorage();
-    
+  const loadComplaints = () => {
     if (user) {
       console.log(`Fetching complaints for lecturer: ${user.id}`);
       const lecturerComplaints = getComplaints(user.id, user.role);
       console.log(`Found ${lecturerComplaints.length} complaints for lecturer`);
       setComplaints(lecturerComplaints);
     }
+  };
+
+  useEffect(() => {
+    initializeLocalStorage();
+    loadComplaints();
+    
+    const intervalId = setInterval(loadComplaints, 5000);
+    return () => clearInterval(intervalId);
   }, [user]);
 
   const getFilteredComplaints = () => {
@@ -110,6 +114,11 @@ const LecturerDashboard: React.FC = () => {
     }
   ];
 
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    loadComplaints();
+  };
+
   return (
     <AuthLayout requiredRole="lecturer">
       <DashboardLayout navItems={navItems}>
@@ -170,6 +179,13 @@ const LecturerDashboard: React.FC = () => {
               <CardDescription>
                 View and manage complaints from students in your courses
               </CardDescription>
+              <Button 
+                variant="outline" 
+                className="mt-2" 
+                onClick={loadComplaints}
+              >
+                Refresh Complaints
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="flex mb-4">
@@ -183,7 +199,7 @@ const LecturerDashboard: React.FC = () => {
                   />
                 </div>
               </div>
-              <Tabs defaultValue="all" onValueChange={setActiveTab}>
+              <Tabs defaultValue="all" onValueChange={handleTabChange}>
                 <TabsList className="mb-4">
                   <TabsTrigger value="all">
                     All ({counts.all})

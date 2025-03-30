@@ -1,4 +1,3 @@
-
 import { User, Course, Complaint, Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -303,19 +302,6 @@ export const logout = () => {
 };
 
 // Complaint management functions
-export const getComplaints = (userId: string, role: string): Complaint[] => {
-  const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
-  
-  if (role === "student") {
-    return storedComplaints.filter((c: Complaint) => c.studentId === userId);
-  } else if (role === "lecturer") {
-    const userCourses = users.find(u => u.id === userId)?.courses || [];
-    return storedComplaints.filter((c: Complaint) => userCourses.includes(c.courseId));
-  }
-  
-  return [];
-};
-
 export const getComplaintById = (complaintId: string): Complaint | undefined => {
   const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
   return storedComplaints.find((c: Complaint) => c.id === complaintId);

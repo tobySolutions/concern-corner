@@ -1,10 +1,10 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { GraduationCap, LogOut, User, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,9 +26,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, navItems })
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-background flex flex-col">
       {/* Top Header */}
-      <header className="bg-white border-b sticky top-0 z-30">
+      <header className="bg-white dark:bg-card border-b sticky top-0 z-30">
         <div className="container mx-auto flex items-center justify-between p-4">
           <div className="flex items-center">
             <GraduationCap className="h-6 w-6 text-university-primary mr-2" />
@@ -38,6 +38,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, navItems })
           </div>
 
           <div className="flex items-center">
+            {/* Theme Switcher */}
+            <ThemeSwitcher />
+
             {/* Mobile Nav Trigger */}
             <Sheet>
               <SheetTrigger asChild>
@@ -76,14 +79,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, navItems })
 
             <div className="flex items-center ml-4">
               <div className="hidden md:block mr-4 text-sm">
-                <span className="text-gray-500">Welcome,</span>{" "}
+                <span className="text-gray-500 dark:text-gray-400">Welcome,</span>{" "}
                 <span className="font-medium">{user?.name}</span>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={logout}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
                 title="Logout"
               >
                 <LogOut className="h-5 w-5" />
@@ -95,7 +98,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, navItems })
 
       <div className="flex flex-1">
         {/* Desktop Sidebar */}
-        <aside className="hidden md:flex w-64 bg-white border-r flex-col">
+        <aside className="hidden md:flex w-64 bg-white dark:bg-card border-r flex-col">
           <nav className="p-4 flex-1 space-y-2">
             {navItems.map((item) => (
               <Button

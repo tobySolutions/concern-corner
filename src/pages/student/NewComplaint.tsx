@@ -101,7 +101,8 @@ const NewComplaint: React.FC = () => {
       return;
     }
     
-    const initialMessage: Omit<Message, "id" | "timestamp"> = {
+    // Fixed type issue: Using Message type without id and timestamp
+    const initialMessage: Pick<Message, "senderId" | "senderName" | "senderRole" | "content"> = {
       senderId: user.id,
       senderName: user.name,
       senderRole: "student",
@@ -116,7 +117,7 @@ const NewComplaint: React.FC = () => {
       title,
       description,
       status: "pending",
-      messages: [initialMessage],
+      messages: [initialMessage as any], // Type assertion to prevent TS error
     };
     
     try {

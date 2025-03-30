@@ -1,5 +1,4 @@
-
-import { User, Course, Complaint } from "@/types";
+import { User, Course, Complaint, Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 

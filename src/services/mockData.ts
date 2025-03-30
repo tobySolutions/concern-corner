@@ -1,3 +1,4 @@
+
 import { User, Course, Complaint, Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -230,6 +231,34 @@ const COMPLAINTS_STORAGE_KEY = "university_cms_complaints";
 const COURSES_STORAGE_KEY = "university_cms_courses";
 const CURRENT_USER_KEY = "university_cms_current_user";
 
+// Export accessor functions to get data from localStorage
+export const getUsers = (): User[] => {
+  const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+  return storedUsers ? JSON.parse(storedUsers) : [];
+};
+
+export const getCourses = (): Course[] => {
+  const storedCourses = localStorage.getItem(COURSES_STORAGE_KEY);
+  return storedCourses ? JSON.parse(storedCourses) : [];
+};
+
+export const getComplaints = (userId: string, role: string): Complaint[] => {
+  const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
+  
+  if (role === "student") {
+    return storedComplaints.filter((c: Complaint) => c.studentId === userId);
+  } else if (role === "lecturer") {
+    const userCourses = getUsers().find(u => u.id === userId)?.courses || [];
+    return storedComplaints.filter((c: Complaint) => userCourses.includes(c.courseId));
+  }
+  
+  return [];
+};
+
+// Export courses and users for direct access
+export const users = getUsers();
+export const courses = getCourses();
+
 // Initialize local storage with mock data
 export const initializeLocalStorage = () => {
   if (!localStorage.getItem(USERS_STORAGE_KEY)) {
@@ -369,8 +398,8 @@ export const addMessage = (complaintId: string, message: Omit<Message, 'id' | 't
 
 // Course functions
 export const getUserCourses = (userId: string): Course[] => {
-  const currentUser = users.find(u => u.id === userId);
+  const currentUser = getUsers().find(u => u.id === userId);
   const userCourses = currentUser?.courses || [];
   
-  return courses.filter(c => userCourses.includes(c.id));
+  return getCourses().filter(c => userCourses.includes(c.id));
 };

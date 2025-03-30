@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { getUserCourses, createComplaint, courses, users } from "@/services/mockData";
+import { getUserCourses, createComplaint, getCourses, getUsers } from "@/services/mockData";
 import { Course, Complaint, Message } from "@/types";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import AuthLayout from "@/components/layout/AuthLayout";
@@ -40,8 +40,10 @@ const NewComplaint: React.FC = () => {
 
   useEffect(() => {
     if (courseId) {
+      const courses = getCourses();
       const selectedCourse = courses.find(c => c.id === courseId);
       if (selectedCourse) {
+        const users = getUsers();
         const lecturer = users.find(u => u.id === selectedCourse.lecturerId);
         setSelectedLecturer(lecturer ? lecturer.name : null);
       } else {

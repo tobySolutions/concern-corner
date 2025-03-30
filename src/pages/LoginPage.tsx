@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { GraduationCap, BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { initializeLocalStorage } from "@/services/mockData";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +17,11 @@ const LoginPage: React.FC = () => {
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
+  // Initialize mock data when the login page loads
+  useEffect(() => {
+    initializeLocalStorage();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoggingIn(true);
@@ -23,9 +29,7 @@ const LoginPage: React.FC = () => {
     try {
       const success = await login(email, password);
       if (!success) {
-        toast("Invalid credentials", {
-          description: "Please check your email and try again."
-        });
+        toast.error("Invalid credentials. Please check your email and password.");
       }
       // Redirect will happen automatically through useEffect if successful
     } finally {
@@ -33,7 +37,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       if (user?.role === "student") {
         navigate("/student-dashboard");

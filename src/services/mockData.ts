@@ -19,6 +19,27 @@ export const users: User[] = [
     courses: ["cs101", "cs202", "bio101"]
   },
   {
+    id: "s3",
+    name: "Alex Johnson",
+    email: "alex@university.edu",
+    role: "student",
+    courses: ["cs202", "phy101", "chem101", "math201"]
+  },
+  {
+    id: "s4",
+    name: "Sarah Williams",
+    email: "sarah@university.edu",
+    role: "student",
+    courses: ["bio101", "chem101", "hist101", "art101"]
+  },
+  {
+    id: "s5",
+    name: "Michael Chen",
+    email: "michael@university.edu",
+    role: "student",
+    courses: ["eng110", "hist101", "art101", "phy101"]
+  },
+  {
     id: "l1",
     name: "Dr. Robert Brown",
     email: "rbrown@university.edu",
@@ -30,7 +51,21 @@ export const users: User[] = [
     name: "Prof. Emily White",
     email: "ewhite@university.edu",
     role: "lecturer",
-    courses: ["math201", "eng110", "bio101"]
+    courses: ["math201", "eng110"]
+  },
+  {
+    id: "l3",
+    name: "Dr. James Smith",
+    email: "jsmith@university.edu",
+    role: "lecturer",
+    courses: ["bio101", "chem101"]
+  },
+  {
+    id: "l4",
+    name: "Prof. Lisa Chen",
+    email: "lchen@university.edu",
+    role: "lecturer",
+    courses: ["hist101", "art101", "phy101"]
   }
 ];
 
@@ -64,7 +99,31 @@ export const courses: Course[] = [
     id: "bio101",
     code: "BIO101",
     name: "Introduction to Biology",
-    lecturerId: "l2"
+    lecturerId: "l3"
+  },
+  {
+    id: "chem101",
+    code: "CHEM101",
+    name: "General Chemistry",
+    lecturerId: "l3"
+  },
+  {
+    id: "phy101",
+    code: "PHY101",
+    name: "Physics for Scientists",
+    lecturerId: "l4"
+  },
+  {
+    id: "hist101",
+    code: "HIST101",
+    name: "World History",
+    lecturerId: "l4"
+  },
+  {
+    id: "art101",
+    code: "ART101",
+    name: "Introduction to Fine Arts",
+    lecturerId: "l4"
   }
 ];
 

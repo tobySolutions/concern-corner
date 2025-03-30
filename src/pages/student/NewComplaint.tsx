@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { getUserCourses, createComplaint } from "@/services/mockData";
+import { getUserCourses, createComplaint, courses, users } from "@/services/mockData";
 import { Course, Complaint, Message } from "@/types";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import AuthLayout from "@/components/layout/AuthLayout";
@@ -19,11 +19,12 @@ const NewComplaint: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [userCourses, setUserCourses] = useState<Course[]>([]);
   const [courseId, setCourseId] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedLecturer, setSelectedLecturer] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState({
     courseId: "",
     title: "",
@@ -32,10 +33,24 @@ const NewComplaint: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      const userCourses = getUserCourses(user.id);
-      setCourses(userCourses);
+      const fetchedUserCourses = getUserCourses(user.id);
+      setUserCourses(fetchedUserCourses);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (courseId) {
+      const selectedCourse = courses.find(c => c.id === courseId);
+      if (selectedCourse) {
+        const lecturer = users.find(u => u.id === selectedCourse.lecturerId);
+        setSelectedLecturer(lecturer ? lecturer.name : null);
+      } else {
+        setSelectedLecturer(null);
+      }
+    } else {
+      setSelectedLecturer(null);
+    }
+  }, [courseId]);
 
   const validateForm = () => {
     let valid = true;
@@ -89,7 +104,7 @@ const NewComplaint: React.FC = () => {
       return;
     }
 
-    const selectedCourse = courses.find(c => c.id === courseId);
+    const selectedCourse = userCourses.find(c => c.id === courseId);
     
     if (!selectedCourse) {
       toast({
@@ -164,7 +179,7 @@ const NewComplaint: React.FC = () => {
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-card text-card-foreground">
             <CardHeader>
               <CardTitle>Complaint Details</CardTitle>
               <CardDescription>
@@ -180,13 +195,18 @@ const NewComplaint: React.FC = () => {
                       <SelectValue placeholder="Select a course" />
                     </SelectTrigger>
                     <SelectContent>
-                      {courses.map((course) => (
+                      {userCourses.map((course) => (
                         <SelectItem key={course.id} value={course.id}>
                           {course.code} - {course.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  {selectedLecturer && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Lecturer: {selectedLecturer}
+                    </p>
+                  )}
                   {formErrors.courseId && (
                     <p className="text-red-500 text-xs mt-1">{formErrors.courseId}</p>
                   )}
@@ -219,12 +239,12 @@ const NewComplaint: React.FC = () => {
                   )}
                 </div>
 
-                <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200">
+                <div className="bg-secondary/30 p-4 rounded-md border border-border">
                   <div className="flex">
                     <AlertTriangle className="h-5 w-5 text-yellow-500 mr-2" />
                     <div>
-                      <h4 className="text-sm font-medium text-yellow-800">Important Notice</h4>
-                      <p className="text-sm text-yellow-700 mt-1">
+                      <h4 className="text-sm font-medium">Important Notice</h4>
+                      <p className="text-sm text-muted-foreground mt-1">
                         Once submitted, your complaint will be sent to the course lecturer. You will be notified of any updates.
                       </p>
                     </div>

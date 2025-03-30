@@ -1,69 +1,90 @@
-# Welcome to your Lovable project
 
-## Project info
+# University Complaints Management System
 
-**URL**: https://lovable.dev/projects/5b95dd7e-2de3-4605-adcf-c13f22f2cd09
+## Overview
 
-## How can I edit this code?
+The University Complaints Management System is a web-based platform that streamlines the process of submitting, tracking, and resolving student complaints. It replaces traditional physical complaint letters with an efficient digital solution.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+### For Students
+- Submit complaints for specific courses
+- Track complaint status (Pending, In Progress, Resolved)
+- Receive updates on complaint progress
+- Respond to lecturer feedback
+- View complaint history with timestamps
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5b95dd7e-2de3-4605-adcf-c13f22f2cd09) and start prompting.
+### For Lecturers
+- Access a dashboard of all student complaints for assigned courses
+- Update complaint status (Pending, In Progress, Resolved)
+- Respond to student complaints
+- Organize and filter complaints by status
+- Archive resolved complaints
 
-Changes made via Lovable will be committed automatically to this repo.
+## Technology Stack
 
-**Use your preferred IDE**
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- React Router for navigation
+- React Query for state management
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+- Node.js (v14.0 or higher)
+- npm or yarn package manager
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Installation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd university-complaints-system
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Start the development server:
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-**Use GitHub Codespaces**
+4. Open your browser and navigate to `http://localhost:5173`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Demo Accounts
 
-## What technologies are used for this project?
+### Student Accounts
+- Email: john@university.edu (Password: any)
+- Email: jane@university.edu (Password: any)
+- Email: alex@university.edu (Password: any)
+- Email: sarah@university.edu (Password: any)
+- Email: michael@university.edu (Password: any)
 
-This project is built with .
+### Lecturer Accounts
+- Email: rbrown@university.edu (Password: any)
+- Email: ewhite@university.edu (Password: any)
+- Email: jsmith@university.edu (Password: any)
+- Email: lchen@university.edu (Password: any)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Project Structure
 
-## How can I deploy this project?
+- `/src/components`: Reusable UI components
+- `/src/contexts`: React context providers
+- `/src/hooks`: Custom React hooks
+- `/src/pages`: Page components for different routes
+- `/src/services`: Service functions for data management
+- `/src/types`: TypeScript type definitions
 
-Simply open [Lovable](https://lovable.dev/projects/5b95dd7e-2de3-4605-adcf-c13f22f2cd09) and click on Share -> Publish.
+## License
 
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+This project is licensed under the MIT License - see the LICENSE file for details.

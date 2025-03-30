@@ -40,13 +40,13 @@ const LoginPage: React.FC = () => {
   }, [isAuthenticated, user, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-university-accent to-white flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-university-dark to-black flex flex-col justify-center items-center p-4">
       <div className="flex items-center mb-8">
-        <GraduationCap size={40} className="text-university-primary mr-2" />
-        <h1 className="text-3xl font-bold text-university-primary">University Complaints Management System</h1>
+        <GraduationCap size={40} className="text-university-light mr-2" />
+        <h1 className="text-3xl font-bold text-university-light">University Complaints Management System</h1>
       </div>
       
-      <Card className="w-full max-w-md shadow-lg">
+      <Card className="w-full max-w-md shadow-lg border-university-secondary/30 bg-card">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
           <CardDescription className="text-center">
@@ -100,27 +100,29 @@ const LoginPage: React.FC = () => {
         </form>
       </Card>
       
-      <div className="mt-8 text-center text-sm text-gray-600">
-        <p className="mb-2">Demo Accounts:</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-          <div className="p-3 border rounded-md bg-white">
-            <div className="flex items-center mb-2">
-              <BookOpen size={16} className="mr-1 text-university-primary" />
-              <span className="font-semibold">Student Accounts</span>
-            </div>
-            <p>john@university.edu</p>
-            <p>jane@university.edu</p>
-            <p className="text-xs mt-1 text-muted-foreground">(any password)</p>
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md">
+        <div className="p-4 border rounded-md bg-card border-university-secondary/30">
+          <div className="flex items-center mb-2">
+            <BookOpen size={16} className="mr-1 text-university-light" />
+            <span className="font-semibold">Student Accounts</span>
           </div>
-          <div className="p-3 border rounded-md bg-white">
-            <div className="flex items-center mb-2">
-              <GraduationCap size={16} className="mr-1 text-university-primary" />
-              <span className="font-semibold">Lecturer Accounts</span>
-            </div>
-            <p>rbrown@university.edu</p>
-            <p>ewhite@university.edu</p>
-            <p className="text-xs mt-1 text-muted-foreground">(any password)</p>
+          <p>john@university.edu</p>
+          <p>jane@university.edu</p>
+          <p>alex@university.edu</p>
+          <p>sarah@university.edu</p>
+          <p>michael@university.edu</p>
+          <p className="text-xs mt-1 text-muted-foreground">(any password)</p>
+        </div>
+        <div className="p-4 border rounded-md bg-card border-university-secondary/30">
+          <div className="flex items-center mb-2">
+            <GraduationCap size={16} className="mr-1 text-university-light" />
+            <span className="font-semibold">Lecturer Accounts</span>
           </div>
+          <p>rbrown@university.edu</p>
+          <p>ewhite@university.edu</p>
+          <p>jsmith@university.edu</p>
+          <p>lchen@university.edu</p>
+          <p className="text-xs mt-1 text-muted-foreground">(any password)</p>
         </div>
       </div>
     </div>

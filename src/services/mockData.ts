@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
 // Demo users for the system
-export const users: User[] = [
+const initialUsers: User[] = [
   {
     id: "s1",
     name: "John Doe",
@@ -70,7 +70,7 @@ export const users: User[] = [
 ];
 
 // Available courses
-export const courses: Course[] = [
+const initialCourses: Course[] = [
   {
     id: "cs101",
     code: "CS101",
@@ -128,7 +128,7 @@ export const courses: Course[] = [
 ];
 
 // Sample complaints data
-export const complaints: Complaint[] = [
+const initialComplaints: Complaint[] = [
   {
     id: uuidv4(),
     referenceNumber: "COMP-2023-001",
@@ -233,13 +233,13 @@ const CURRENT_USER_KEY = "university_cms_current_user";
 // Initialize local storage with mock data
 export const initializeLocalStorage = () => {
   if (!localStorage.getItem(USERS_STORAGE_KEY)) {
-    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
   }
   if (!localStorage.getItem(COMPLAINTS_STORAGE_KEY)) {
-    localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(complaints));
+    localStorage.setItem(COMPLAINTS_STORAGE_KEY, JSON.stringify(initialComplaints));
   }
   if (!localStorage.getItem(COURSES_STORAGE_KEY)) {
-    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
+    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(initialCourses));
   }
 };
 
@@ -251,7 +251,15 @@ export const getCurrentUser = (): User | null => {
 
 export const login = (email: string, password: string): User | null => {
   // For demo purposes, password is ignored
-  const storedUsers = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "[]");
+  const storedUsersJson = localStorage.getItem(USERS_STORAGE_KEY);
+  if (!storedUsersJson) {
+    console.error("No users found in storage");
+    // Initialize storage if it's empty
+    initializeLocalStorage();
+    return null;
+  }
+  
+  const storedUsers: User[] = JSON.parse(storedUsersJson);
   const user = storedUsers.find((u: User) => u.email === email);
   
   if (user) {

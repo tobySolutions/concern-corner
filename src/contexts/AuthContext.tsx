@@ -33,19 +33,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
-    const user = performLogin(email, password);
-    
-    if (user) {
-      setUser(user);
-      toast({
-        title: "Login successful",
-        description: `Welcome back, ${user.name}!`,
-      });
-      return true;
-    } else {
+    try {
+      const user = performLogin(email, password);
+      
+      if (user) {
+        setUser(user);
+        toast({
+          title: "Login successful",
+          description: `Welcome back, ${user.name}!`,
+        });
+        return true;
+      } else {
+        toast({
+          title: "Login failed",
+          description: "Invalid email or password",
+          variant: "destructive",
+        });
+        return false;
+      }
+    } catch (error) {
+      console.error("Login error:", error);
       toast({
         title: "Login failed",
-        description: "Invalid email or password",
+        description: "There was a problem with login. Please try again.",
         variant: "destructive",
       });
       return false;

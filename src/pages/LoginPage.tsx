@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, BookOpen } from "lucide-react";
+import { toast } from "sonner";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -21,9 +22,12 @@ const LoginPage: React.FC = () => {
     
     try {
       const success = await login(email, password);
-      if (success) {
-        // Redirect will happen automatically through useEffect
+      if (!success) {
+        toast("Invalid credentials", {
+          description: "Please check your email and try again."
+        });
       }
+      // Redirect will happen automatically through useEffect if successful
     } finally {
       setIsLoggingIn(false);
     }

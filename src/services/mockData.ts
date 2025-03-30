@@ -1,3 +1,4 @@
+
 import { User, Course, Complaint, Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -230,35 +231,7 @@ const COMPLAINTS_STORAGE_KEY = "university_cms_complaints";
 const COURSES_STORAGE_KEY = "university_cms_courses";
 const CURRENT_USER_KEY = "university_cms_current_user";
 
-// Export accessor functions to get data from localStorage
-export const getUsers = (): User[] => {
-  const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
-  return storedUsers ? JSON.parse(storedUsers) : [];
-};
-
-export const getCourses = (): Course[] => {
-  const storedCourses = localStorage.getItem(COURSES_STORAGE_KEY);
-  return storedCourses ? JSON.parse(storedCourses) : [];
-};
-
-export const getComplaints = (userId: string, role: string): Complaint[] => {
-  const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
-  
-  if (role === "student") {
-    return storedComplaints.filter((c: Complaint) => c.studentId === userId);
-  } else if (role === "lecturer") {
-    const userCourses = getUsers().find(u => u.id === userId)?.courses || [];
-    return storedComplaints.filter((c: Complaint) => userCourses.includes(c.courseId));
-  }
-  
-  return [];
-};
-
-// Export courses and users for direct access
-export const users = getUsers();
-export const courses = getCourses();
-
-// Initialize local storage with mock data
+// Initialize local storage with mock data - moved up for better organization
 export const initializeLocalStorage = () => {
   if (!localStorage.getItem(USERS_STORAGE_KEY)) {
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
@@ -271,6 +244,36 @@ export const initializeLocalStorage = () => {
   }
 };
 
+// Export accessor functions to get data from localStorage
+export const getUsers = (): User[] => {
+  // Initialize storage if not already done
+  initializeLocalStorage();
+  const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+  return storedUsers ? JSON.parse(storedUsers) : [];
+};
+
+export const getCourses = (): Course[] => {
+  // Initialize storage if not already done
+  initializeLocalStorage();
+  const storedCourses = localStorage.getItem(COURSES_STORAGE_KEY);
+  return storedCourses ? JSON.parse(storedCourses) : [];
+};
+
+export const getComplaints = (userId: string, role: string): Complaint[] => {
+  // Initialize storage if not already done
+  initializeLocalStorage();
+  const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
+  
+  if (role === "student") {
+    return storedComplaints.filter((c: Complaint) => c.studentId === userId);
+  } else if (role === "lecturer") {
+    const userCourses = getUsers().find(u => u.id === userId)?.courses || [];
+    return storedComplaints.filter((c: Complaint) => userCourses.includes(c.courseId));
+  }
+  
+  return [];
+};
+
 // Authentication functions
 export const getCurrentUser = (): User | null => {
   const userJson = localStorage.getItem(CURRENT_USER_KEY);
@@ -278,17 +281,14 @@ export const getCurrentUser = (): User | null => {
 };
 
 export const login = (email: string, password: string): User | null => {
-  // For demo purposes, password is ignored
-  const storedUsersJson = localStorage.getItem(USERS_STORAGE_KEY);
-  if (!storedUsersJson) {
-    console.error("No users found in storage");
-    // Initialize storage if it's empty
-    initializeLocalStorage();
-    return null;
-  }
+  // Always initialize storage first to ensure data is available
+  initializeLocalStorage();
   
-  const storedUsers: User[] = JSON.parse(storedUsersJson);
-  const user = storedUsers.find((u: User) => u.email === email);
+  // Now get users from storage
+  const users = getUsers();
+  
+  // Find the user by email (password is ignored for demo)
+  const user = users.find((u) => u.email === email);
   
   if (user) {
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
@@ -303,6 +303,8 @@ export const logout = () => {
 
 // Complaint management functions
 export const getComplaintById = (complaintId: string): Complaint | undefined => {
+  // Initialize storage if not already done
+  initializeLocalStorage();
   const storedComplaints = JSON.parse(localStorage.getItem(COMPLAINTS_STORAGE_KEY) || "[]");
   return storedComplaints.find((c: Complaint) => c.id === complaintId);
 };

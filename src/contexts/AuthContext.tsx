@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "@/types";
 import { getCurrentUser, login as performLogin, logout as performLogout, initializeLocalStorage } from "@/services/mockData";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 type AuthContextType = {
   user: User | null;
@@ -17,10 +17,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
-    // Initialize mock data
+    // Initialize mock data on startup
     initializeLocalStorage();
     
     // Check if user is already logged in
@@ -38,26 +37,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (user) {
         setUser(user);
-        toast({
-          title: "Login successful",
-          description: `Welcome back, ${user.name}!`,
-        });
+        toast.success(`Welcome back, ${user.name}!`);
         return true;
       } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid email or password",
-          variant: "destructive",
-        });
         return false;
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast({
-        title: "Login failed",
-        description: "There was a problem with login. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("There was a problem with login. Please try again.");
       return false;
     }
   };
@@ -65,10 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     performLogout();
     setUser(null);
-    toast({
-      title: "Logged out",
-      description: "You have been logged out successfully",
-    });
+    toast.success("You have been logged out successfully");
   };
 
   return (
